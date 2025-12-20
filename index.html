@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Free Fire Menu Gia Khánh</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+:root{
+  --main:#00f5ff;
+  --glow:rgba(0,245,255,.5);
+  --bg1:#000;
+  --bg2:#050b14;
+  --vip-main:#ff00ff;
+  --vip-glow:rgba(255,0,255,0.7);
+  --vip-bg1:#100010;
+  --vip-bg2:#200020;
+  --gold:#FFD700;
+}
+*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,sans-serif}
+body{
+  height:100vh;display:flex;justify-content:center;align-items:center;
+  background:linear-gradient(var(--bg1),var(--bg2));color:var(--main);
+}
+.glass{
+  width:350px;padding:16px;border-radius:22px;
+  background:rgba(10,15,25,.82);box-shadow:0 0 35px var(--glow);
+}
+#menu{display:none}
+input,button{width:100%;padding:10px;border-radius:14px;border:none;margin-bottom:10px}
+input{background:#000;color:var(--main)}
+button{background:linear-gradient(90deg,var(--main),#fff);color:#000;font-weight:bold}
+.header{text-align:center;margin-bottom:6px;font-weight:bold;text-shadow:0 0 10px var(--main)}
+.section{
+  background:rgba(0,0,0,.55);border-radius:16px;padding:10px;margin-bottom:10px;
+  box-shadow:0 0 12px var(--glow);
+}
+.section-title{font-size:13px;margin-bottom:6px}
+.toggle{display:flex;justify-content:space-between;align-items:center;margin:8px 0;font-size:14px}
+.switch{position:relative;width:42px;height:22px}
+.switch input{display:none}
+.slider{position:absolute;inset:0;background:#333;border-radius:22px}
+.slider:before{
+  content:"";position:absolute;width:18px;height:18px;left:2px;top:2px;
+  background:#fff;border-radius:50%;transition:.25s
+}
+input:checked + .slider{background:var(--main);box-shadow:0 0 10px var(--main)}
+input:checked + .slider:before{transform:translateX(20px)}
+#countdown,#keyType{text-align:center;font-size:12px;margin-bottom:6px}
+
+/* AVATAR */
+.avatar-box{position:relative;width:96px;height:96px;margin:10px auto 6px}
+.avatar-img{
+  width:76px;height:76px;border-radius:50%;
+  position:absolute;top:10px;left:10px;
+  z-index:2;object-fit:cover;background:#111
+}
+.avatar-ring{
+  position:absolute;inset:0;border-radius:50%;
+  background:conic-gradient(var(--main), transparent, var(--main));
+  animation:spin 2.4s linear infinite;
+  box-shadow:0 0 16px var(--glow)
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* FILE STATUS */
+.file-safe{
+  text-align:center;font-size:12px;font-weight:bold;
+  padding:6px 0;margin:6px auto;border-radius:12px;
+}
+.file-free{color:#00ff9c;background:rgba(0,255,156,.08);box-shadow:0 0 10px rgba(0,255,156,.6)}
+.file-vip{color:#ff00ff;background:rgba(255,0,255,.08);box-shadow:0 0 14px rgba(255,0,255,.7);font-size:14px;text-shadow:0 0 12px #ff00ff; border:2px solid var(--gold); border-radius:14px;}
+.file-die{color:#ff3b3b;background:rgba(255,0,0,.12);box-shadow:0 0 12px rgba(255,0,0,.8)}
+.file-off{color:#ff3b3b;background:rgba(255,0,0,.15);box-shadow:0 0 12px rgba(255,0,0,.9)}
+
+/* FILE INPUT */
+.file-input{text-align:center;margin:6px auto;cursor:pointer;position:relative}
+.file-input input{display:none}
+.file-input span{
+  padding:6px 14px;border-radius:14px;
+  font-size:12px;font-weight:bold;
+  background:linear-gradient(90deg,var(--main),#fff);
+  color:#000;box-shadow:0 0 12px var(--glow)
+}
+.file-name{text-align:center;font-size:11px;opacity:.9;margin-top:4px}
+.checkmark{color:#00ff6e;font-weight:bold;margin-left:6px}
+.disabled{opacity:.4;pointer-events:none}
+
+/* NÚT MENU ON CUỐI */
+#menuOnBtn,#logoutBtn{
+  width:100%;padding:10px;margin-top:6px;border-radius:14px;
+  background:linear-gradient(90deg,var(--main),#fff);
+  color:#000;font-weight:bold;cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<!-- LOGIN -->
+<div id="loginBox" class="glass">
+  <div class="header">FREE FIRE</div>
+  <input id="keyInput" type="password" placeholder="Nhập key">
+  <button onclick="login()">LOGIN</button>
+</div>
+
+<!-- MENU -->
+<div id="menu" class="glass">
+  <div class="header">FREE FIRE MENU</div>
+
+  <!-- AVATAR -->
+  <div class="avatar-box">
+    <div class="avatar-ring" id="avatarRing"></div>
+    <img id="avatarImg" class="avatar-img" src="https://i.imgur.com/Fh9c0KD.png">
+  </div>
+
+  <!-- CHỌN AVATAR -->
+  <label class="file-input">
+    <input type="file" id="avatarPick" accept="image/*">
+    <span>🖼️ CHỌN AVATAR <span id="avatarCheck" class="checkmark" style="display:none">✅</span></span>
+  </label>
+
+  <!-- FILE STATUS -->
+  <div id="fileStatus" class="file-safe file-free">FILE LACK BAN</div>
+
+  <!-- FILE INPUT -->
+  <label id="fileBox" class="file-input">
+    <input type="file" id="fileInject" accept=".bin,.dat,.zip,.txt">
+    <span>📂 CHÈN FILE</span>
+  </label>
+  <div id="fileName" class="file-name">Chưa chọn file</div>
+
+  <div id="keyType"></div>
+
+  <!-- MASTER -->
+  <div class="section">
+    <div class="toggle">
+      <span>🇻🇳 MENU ON / OFF</span>
+      <label class="switch">
+        <input type="checkbox" id="masterSwitch" checked>
+        <span class="slider"></span>
+      </label>
+    </div>
+  </div>
+
+  <!-- AIMBOT -->
+  <div class="section">
+    <div class="section-title">AIMBOT</div>
+    <div class="toggle">
+      <span>Aimbot Head</span>
+      <label class="switch">
+        <input type="checkbox" data-id="aim_head"><span class="slider"></span>
+      </label>
+    </div>
+    <div class="toggle vip">
+      <span>Aimbot Body</span>
+      <label class="switch">
+        <input type="checkbox" data-id="aim_body"><span class="slider"></span>
+      </label>
+    </div>
+    <!-- VIP Extra Functions -->
+    <div class="toggle vip">
+      <span>LockHead</span>
+      <label class="switch">
+        <input type="checkbox" data-id="auto_headshot"><span class="slider"></span>
+      </label>
+    </div>
+    <div class="toggle vip">
+      <span>Quick Reload</span>
+      <label class="switch">
+        <input type="checkbox" data-id="quick_reload"><span class="slider"></span>
+      </label>
+    </div>
+  </div>
+
+  <!-- WEAPON -->
+  <div class="section">
+    <div class="section-title">WEAPON</div>
+    <div class="toggle">
+      <span>No Recoil</span>
+      <label class="switch">
+        <input type="checkbox" data-id="norecoil"><span class="slider"></span>
+      </label>
+    </div>
+    <div class="toggle vip">
+      <span>Fast Fire</span>
+      <label class="switch">
+        <input type="checkbox" data-id="fastfire"><span class="slider"></span>
+      </label>
+    </div>
+  </div>
+
+  <button id="menuOnBtn">ON</button>
+  <button id="logoutBtn">ĐĂNG XUẤT</button>
+
+  <div id="countdown"></div>
+</div>
+
+<script>
+const keys={
+  "KeyFree":{
+    type:"FREE", expiry:"9999-12-31T23:59:59",
+    theme:{main:"#00f5ff",glow:"rgba(0,245,255,.5)",bg1:"#000",bg2:"#050b14"}
+  },
+  "KeyVipGiaKhanh":{
+    type:"VIP", expiry:"9999-12-31T23:59:59",
+    theme:{main:"#ff00ff",glow:"rgba(255,0,255,0.7)",bg1:"#100010",bg2:"#200020"}
+  }
+};
+
+let currentKey="", timer=null;
+
+function applyTheme(t){
+  document.documentElement.style.setProperty("--main",t.main);
+  document.documentElement.style.setProperty("--glow",t.glow);
+  document.documentElement.style.setProperty("--bg1",t.bg1);
+  document.documentElement.style.setProperty("--bg2",t.bg2);
+  document.getElementById("avatarRing").style.background=`conic-gradient(${t.main}, transparent, ${t.main})`;
+}
+
+function saveStates(){
+  const data={};
+  document.querySelectorAll("input[type=checkbox][data-id]").forEach(cb=>{
+    data[cb.dataset.id]=cb.checked;
+  });
+  localStorage.setItem("ff_state_"+currentKey, JSON.stringify(data));
+}
+function loadStates(){
+  const raw=localStorage.getItem("ff_state_"+currentKey);
+  if(!raw) return;
+  const data=JSON.parse(raw);
+  document.querySelectorAll("input[type=checkbox][data-id]").forEach(cb=>{
+    if(cb.dataset.id in data) cb.checked=data[cb.dataset.id];
+  });
+}
+
+document.addEventListener("change",e=>{
+  if(e.target.matches("input[type=checkbox][data-id]")) saveStates();
+});
+
+function setFileStatus(state){
+  const el=document.getElementById("fileStatus");
+  el.className="file-safe";
+  if(state==="DIE"){
+    el.textContent="FILE DIE"; el.classList.add("file-die");
+    document.getElementById("fileBox").classList.add("disabled");
+  }else if(state==="OFF"){
+    el.textContent="MENU OFF – RISK"; el.classList.add("file-off");
+    document.getElementById("fileBox").classList.add("disabled");
+  }else if(state==="VIP"){
+    el.textContent="FILE LACK BAN"; el.classList.add("file-vip");
+    document.getElementById("fileBox").classList.remove("disabled");
+  }else{
+    el.textContent="FILE LACK BAN"; el.classList.add("file-free");
+    document.getElementById("fileBox").classList.remove("disabled");
+  }
+}
+
+function login(){
+  const k=keyInput.value.trim();
+  if(!keys[k]){alert("Sai key");return;}
+  const data=keys[k];
+  const exp=new Date(data.expiry);
+  currentKey=k;
+  applyTheme(data.theme);
+  loginBox.style.display="none";
+  menu.style.display="block";
+  keyType.innerText="🔑 KEY: "+data.type;
+
+  if(data.type==="FREE") document.querySelectorAll(".vip").forEach(e=>e.classList.add("disabled"));
+
+  loadStates(); 
+
+  timer=setInterval(()=>{
+    const d=exp-new Date();
+    if(d<=0){setFileStatus("DIE");clearInterval(timer);return;}
+    const h=Math.floor(d/3600000);
+    const m=Math.floor(d/60000)%60;
+    const s=Math.floor(d/1000)%60;
+    countdown.innerText=`⏳ ${h}h ${m}m ${s}s`;
+  },1000);
+
+  setFileStatus(data.type);
+}
+
+const fileInput=document.getElementById("fileInject");
+const fileName=document.getElementById("fileName");
+fileInput.onchange=()=>{
+  if(!fileInput.files.length){
+    fileName.textContent="Chưa chọn file"; return;
+  }
+  fileName.textContent="✔ FILE: "+fileInput.files[0].name;
+};
+
+const avatarPick=document.getElementById("avatarPick");
+const avatarImg=document.getElementById("avatarImg");
+const avatarCheck=document.getElementById("avatarCheck");
+avatarPick.onchange=()=>{
+  if(!avatarPick.files.length) return;
+  avatarImg.src=URL.createObjectURL(avatarPick.files[0]);
+  avatarCheck.style.display="inline";
+};
+
+const masterSwitch=document.getElementById("masterSwitch");
+masterSwitch.onchange=()=>{
+  if(!masterSwitch.checked) setFileStatus("OFF");
+  else if(currentKey && new Date()>=new Date(keys[currentKey].expiry)) setFileStatus("DIE");
+  else setFileStatus(keys[currentKey]?.type || "FREE");
+};
+
+const menuOnBtn=document.getElementById("menuOnBtn");
+menuOnBtn.onclick=()=>{
+  menuOnBtn.textContent="ON ✅";
+};
+
+const logoutBtn=document.getElementById("logoutBtn");
+logoutBtn.onclick=()=>{
+  menu.style.display="none";
+  loginBox.style.display="block";
+  masterSwitch.checked=true;
+  menuOnBtn.textContent="ON";
+  setFileStatus("FREE");
+};
+</script>
+
+</body>
+</html>
